@@ -6,9 +6,9 @@ import time
 sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
 
 # Set the temperature, pressure, and humidity oversampling values to maximum (16X)
-sensor.set_temperature_oversampling(bme680.OS_16X)
-sensor.set_pressure_oversampling(bme680.OS_16X)
-sensor.set_humidity_oversampling(bme680.OS_16X)
+sensor.set_temperature_oversample(bme680.OS_16X)
+sensor.set_pressure_oversample(bme680.OS_16X)
+sensor.set_humidity_oversample(bme680.OS_16X)
 
 # Set the filter
 sensor.set_filter(bme680.FILTER_SIZE_0)
