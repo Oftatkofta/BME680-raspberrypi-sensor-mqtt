@@ -21,7 +21,7 @@ sensor.get_sensor_data()
 temperature = sensor.data.temperature
 pressure = sensor.data.pressure
 humidity = sensor.data.humidity
-gas = sensor.data.gas
+gas = sensor.data.gas_resistance
 
 print(f"Temperature: {temperature} C")
 print(f"Pressure: {pressure} Pa")
@@ -33,7 +33,7 @@ while True:
     temperature = sensor.data.temperature
     pressure = sensor.data.pressure
     humidity = sensor.data.humidity
-    gas = sensor.data.gas
+    gas = sensor.data.gas_resistance
 
     print(f"Temperature: {temperature} C")
     print(f"Pressure: {pressure} Pa")
