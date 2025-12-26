@@ -1,6 +1,12 @@
 import bme680 as bme680
 import paho.mqtt.client as mqtt
 import time
+import os
+import json
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize the BME680 sensor
 sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
@@ -22,6 +28,19 @@ temperature = sensor.data.temperature
 pressure = sensor.data.pressure
 humidity = sensor.data.humidity
 gas = sensor.data.gas_resistance
+
+# setup mqtt client with the mqtt-user on Home Assistant and password from the .env file
+mqtt_client = mqtt.Client()
+mqtt_client.username_pw_set(username=os.getenv("MQTT_USER"), password=os.getenv("MQTT_PASSWORD"))
+mqtt_client.connect(os.getenv("MQTT_HOST"), os.getenv("MQTT_PORT"), 60)
+
+mqtt_client.publish(topic=os.getenv("MQTT_TOPIC"), payload=json.dumps({
+    "temperature": temperature,
+    "pressure": pressure,
+    "humidity": humidity,
+    "gas": gas
+}))
+
 
 print(f"Temperature: {temperature} C")
 print(f"Pressure: {pressure} Pa")
