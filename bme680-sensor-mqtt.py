@@ -1,4 +1,4 @@
-import bme860 as bme680
+import bme680 as bme680
 import paho.mqtt.client as mqtt
 import time
 
