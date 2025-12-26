@@ -39,5 +39,5 @@ while True:
     print(f"Pressure: {pressure} Pa")
     print(f"Humidity: {humidity} %")
     print(f"Gas: {gas} Ohms")
-    time.sleep(1)
+    time.sleep(5)
 
