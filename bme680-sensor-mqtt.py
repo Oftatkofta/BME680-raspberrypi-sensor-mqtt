@@ -24,7 +24,7 @@ sensor.set_gas_heater_temperature(320)
 sensor.set_gas_heater_duration(50)
 
 # setup mqtt client with the mqtt-user on Home Assistant and password from the .env file
-mqtt_client = mqtt.Client()
+mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 mqtt_host = os.getenv("MQTT_HOST")
 mqtt_port = int(os.getenv("MQTT_PORT", 1883))  # Default to 1883 if not set
 mqtt_topic = os.getenv("MQTT_TOPIC")
