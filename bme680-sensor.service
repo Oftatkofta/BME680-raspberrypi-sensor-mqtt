@@ -1,0 +1,15 @@
+[Unit]
+Description=BME680 MQTT Sensor
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/BME680-raspberrypi-sensor-mqtt
+ExecStart=/home/pi/.virtualenvs/pimoroni/bin/python3 /home/pi/BME680-raspberrypi-sensor-mqtt/bme680-sensor-mqtt.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
