@@ -49,11 +49,18 @@ sensor.set_gas_heater_duration(100)
 mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 mqtt_client.username_pw_set(username=MQTT_USER, password=MQTT_PASSWORD)
 
+connected = False
+
 def on_connect(client, userdata, flags, reason_code, properties=None):
+    global connected
+    connected = (reason_code == 0)
     print(f"MQTT connected: reason_code={reason_code}")
 
 def on_disconnect(client, userdata, reason_code, properties=None):
+    global connected
+    connected = False
     print(f"MQTT disconnected: reason_code={reason_code}")
+
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_disconnect = on_disconnect
@@ -66,8 +73,24 @@ mqtt_client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
 # Start the MQTT network loop so keepalives/reconnects work during sleep()
 mqtt_client.loop_start()
 
+def ensure_mqtt_connected():
+    global connected
+    if connected:
+        return True
+    try:
+        # Trigger a reconnect attempt; loop_start() will handle I/O
+        mqtt_client.reconnect()
+        # Give it a moment to complete handshake
+        time.sleep(1)
+        return connected
+    except Exception as e:
+        print(f"MQTT reconnect failed: {e!r}")
+        return False
+
 def publish(topic: str, value) -> None:
-    """Publish a value to MQTT. Logs immediate publish failures."""
+    if not ensure_mqtt_connected():
+        print("MQTT not connected; skipping publish cycle")
+        return
     payload = str(value)
     info = mqtt_client.publish(topic=topic, payload=payload, qos=0, retain=False)
     if info.rc != mqtt.MQTT_ERR_SUCCESS:
@@ -118,6 +141,10 @@ while True:
         print(f"Gas: {gas_ohms} Ohms")
 
         time.sleep(PUBLISH_INTERVAL_S)
+        if not ensure_mqtt_connected():
+            time.sleep(10)
+            continue
+
 
     except Exception as e:
         # Do not exit; recover automatically
